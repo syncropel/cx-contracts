@@ -1,0 +1,19 @@
+{
+  "name": "@syncropel/cx-schemas",
+  "version": "2.0.0",
+  "description": "Generated JSON Schema artifacts for Syncropel contracts.",
+  "main": "index.js",
+  "scripts": {
+    "generate": "tsx ./scripts/generate.ts",
+    "build": "pnpm generate"
+  },
+  "devDependencies": {
+    "@syncropel/cx-contracts": "workspace:*",
+    "zod-to-json-schema": "3.23.0",
+    "tsx": "4.9.3",
+    "typescript": "5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

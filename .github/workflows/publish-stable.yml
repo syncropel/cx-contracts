@@ -1,0 +1,57 @@
+name: "Ring 3: Publish Stable"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "The exact version to publish (e.g., 2.0.0)"
+        required: true
+
+jobs:
+  release:
+    name: "Release v${{ github.event.inputs.version }}"
+    runs-on: ubuntu-latest
+    environment: production # Requires manual approval from authorized users
+    permissions:
+      contents: write # To create tags and releases
+      id-token: write # For OIDC publishing if configured
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Setup PNPM & Node.js"
+        uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: "Install & Build"
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: "Update Package Versions"
+        run: |
+          pnpm --filter @syncropel/cx-contracts version ${{ github.event.inputs.version }} --no-git-checks
+          # ... (add script to update python version here) ...
+
+      - name: "Publish Packages to Registries"
+        run: |
+          pnpm --filter @syncropel/cx-contracts publish --tag latest --no-git-checks
+          # ... (add script to publish to PyPI here) ...
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+      - name: "Create Git Tag and GitHub Release"
+        run: |
+          git tag -a v${{ github.event.inputs.version }} -m "Release v${{ github.event.inputs.version }}"
+          git push origin v${{ github.event.inputs.version }}
+          gh release create v${{ github.event.inputs.version }} --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

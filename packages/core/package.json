@@ -1,0 +1,26 @@
+{
+  "name": "@syncropel/cx-contracts",
+  "version": "2.0.0",
+  "description": "The definitive, machine-readable contracts for the Syncropel ecosystem (Source of Truth).",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsc -b --watch",
+    "test": "vitest run",
+    "lint": "eslint src/**/*.ts tests/**/*.ts"
+  },
+  "dependencies": {
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/eslint": "^9.6.1",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "8.57.0",
+    "typescript": "5.4.5",
+    "vitest": "1.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

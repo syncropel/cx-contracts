@@ -1,0 +1,65 @@
+# ==============================================================================
+#   Definitive .gitignore for the cx-contracts Monorepo
+# ==============================================================================
+
+# Node.js
+# ------------------------------------------------------------------------------
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.npmrc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts & Compiled Output
+# ------------------------------------------------------------------------------
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+
+# Test & Coverage Reports
+# ------------------------------------------------------------------------------
+coverage/
+.vitest-pool/
+.vitest-result.json
+*.lcov
+
+# IDE & Editor specific
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS-specific
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# Temporary Files for Integration Tests
+# ------------------------------------------------------------------------------
+packages/core/tests/integration/.roundtrip_temp/
+packages/core/tests/csl/.temp/
+
+# Log files
+# ------------------------------------------------------------------------------
+*.log
+logs
+*.log.*
+
+# Local Environment Variables
+# ------------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# Archives
+# ------------------------------------------------------------------------------
+*.tgz

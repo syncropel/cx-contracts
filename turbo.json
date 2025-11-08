@@ -1,0 +1,32 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**", "*.d.ts"]
+    },
+    "generate": {
+      "dependsOn": ["build"],
+      "outputs": ["src/**", "dist/**"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:roundtrip": {
+      "dependsOn": ["generate"],
+      "outputs": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "lint:csl": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

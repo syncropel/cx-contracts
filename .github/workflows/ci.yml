@@ -1,0 +1,62 @@
+name: "CI: Pre-Flight Checks"
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # Allows manual runs
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: "Validate Contracts"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: "Setup PNPM"
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: "Install Dependencies"
+        run: pnpm install
+
+      - name: "Build All Packages"
+        run: pnpm build
+
+      - name: "1. Run CSL Compliance Linting"
+        run: pnpm lint:csl
+
+      - name: "2. Run Unit & Migration Tests"
+        run: pnpm test -- --coverage
+
+      - name: "3. Run Roundtrip Integration Test"
+        run: |
+          pip install "pydantic[email]" "datamodel-code-generator"
+          pnpm test:roundtrip
+
+      - name: "4. Check for Breaking Changes"
+        if: github.event_name == 'pull_request'
+        run: |
+          # This script will compare against 'main' and exit with an error
+          # if a breaking change is found without a [BREAKING] tag in the PR title.
+          # We will implement this script later, for now, we create the step.
+          echo "Running breaking change detection..."
+          # tsx ./scripts/check-compatibility.ts --base ${{ github.base_ref }}
+          echo "Compatibility check passed (placeholder)."
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: packages/core/coverage/

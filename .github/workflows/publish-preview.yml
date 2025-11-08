@@ -1,0 +1,68 @@
+name: "Ring 1: Publish Preview"
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  publish_and_trigger:
+    name: "Publish Preview & Trigger Downstream"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write # Needed to dispatch workflows
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed for versioning
+
+      - name: "Setup PNPM & Node.js"
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: "Install & Build"
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: "Generate Preview Version & Publish"
+        run: |
+          # Generate version like 2.0.0-preview.abcdef
+          VERSION_BASE=$(jq -r .version packages/core/package.json)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          PREVIEW_VERSION="${VERSION_BASE}-preview.${SHORT_SHA}"
+
+          echo "PREVIEW_VERSION=${PREVIEW_VERSION}" >> $GITHUB_ENV
+
+          # Update version and publish
+          pnpm --filter @syncropel/cx-contracts version ${PREVIEW_VERSION}
+          pnpm --filter @syncropel/cx-contracts publish --tag preview --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: "Trigger Downstream Tests"
+        strategy:
+          matrix:
+            repo: ["syncropel-ui", "cx-shell", "studio-enterprise"]
+        run: |
+          echo "Triggering test run in ${{ matrix.repo }} for version ${{ env.PREVIEW_VERSION }}"
+          gh workflow run test-with-preview.yml \
+            --repo syncropel/${{ matrix.repo }} \
+            --ref main \
+            -f contract_version='${{ env.PREVIEW_VERSION }}'
+        env:
+          GH_TOKEN: ${{ secrets.DOWNSTREAM_TRIGGER_TOKEN }}
+
+      - name: "Post Status to Slack"
+        # In a full implementation, a separate job would wait for and evaluate results.
+        # For now, we just announce that the process has started.
+        run: echo "Ring 1 started for ${{ env.PREVIEW_VERSION }}. Downstream tests triggered."

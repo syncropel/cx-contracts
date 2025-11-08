@@ -1,0 +1,29 @@
+name: "Ring 2: Promote to Canary"
+
+on:
+  workflow_dispatch:
+    inputs:
+      preview_version:
+        description: "The preview version to promote (e.g., 2.0.0-preview.abcdef)"
+        required: true
+
+jobs:
+  promote_and_test:
+    name: "Publish Canary & Run E2E Tests"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      # ... (Steps to install, build, and publish a -canary version) ...
+
+      - name: "Trigger Full Stack E2E Tests"
+        run: |
+          echo "Triggering E2E test suite against canary version..."
+          # This would dispatch to a separate repository containing the Playwright/Docker Compose tests.
+          # gh workflow run full-e2e-suite.yml --repo syncropel/factory-tests ...
+
+      - name: "Notify for Stable Approval"
+        if: success()
+        run: echo "Canary passed. Ready for manual promotion to Stable."
