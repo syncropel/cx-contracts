@@ -49,7 +49,7 @@ export * from "./engine/context";
 
 // Data & Discovery
 export * from "./data/connection";
-export * from "./data/api_catalog";
+export * from "./data/blueprint";
 export * from "./data/capability";
 
 // UI Framework (SDUI)

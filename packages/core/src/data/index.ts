@@ -6,5 +6,5 @@
  */
 
 export * from "./connection";
-export * from "./api_catalog";
+export * from "./blueprint";
 export * from "./capability";

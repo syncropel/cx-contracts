@@ -8,7 +8,7 @@ describe("ConnectionSchema", () => {
     const connection = {
       id: "user:my-db",
       name: "My Production DB",
-      api_catalog_id: "community/postgres@1.0",
+      blueprint_id: "community/postgres@1.0",
       auth_method_type: "user-pass",
       created_at: now,
       updated_at: now,
@@ -23,7 +23,7 @@ describe("ConnectionSchema", () => {
       id: "user:my-db",
       name: "My Production DB",
       description: "The main database for the finance app.",
-      api_catalog_id: "community/postgres@1.0",
+      blueprint_id: "community/postgres@1.0",
       auth_method_type: "user-pass",
       details: {
         host: "db.example.com",
@@ -44,7 +44,7 @@ describe("ConnectionSchema", () => {
     const connection = {
       id: "user:my-db",
       // name is missing
-      api_catalog_id: "community/postgres@1.0",
+      blueprint_id: "community/postgres@1.0",
       auth_method_type: "user-pass",
       created_at: now,
       updated_at: now,

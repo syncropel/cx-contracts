@@ -17,7 +17,7 @@ export const ConnectionBaseSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   /** The ID of the ApiCatalog (Blueprint) this connection implements. e.g., "community/github@v1.0" */
-  api_catalog_id: z.string().min(1),
+  blueprint_id: z.string().min(1),
   /** The chosen authentication method type from the blueprint. */
   auth_method_type: z.string().min(1),
   /** Non-sensitive configuration details like server URL, database name, etc. */

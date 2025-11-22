@@ -1,7 +1,7 @@
 /**
  * Domain 3: Data & Discovery
  *
- * Defines the ApiCatalogSchema (also known as a "Blueprint"), which is a declarative
+ * Defines the BlueprintSchema (also known as a "Blueprint"), which is a declarative
  * manifest describing an external service.
  *
  * @module data/api_catalog
@@ -35,7 +35,7 @@ export type SupportedAuthMethod = z.infer<typeof SupportedAuthMethodSchema>;
  * The definitive schema for a Blueprint (`blueprint.cx.yaml`).
  * It bridges a user-defined Connection to the Capability that implements it.
  */
-export const ApiCatalogSchema = z.object({
+export const BlueprintSchema = z.object({
   /** The unique, namespaced ID of the blueprint. e.g., "community/github@v1.0" */
   id: z.string().min(1),
   name: z.string().min(1),
@@ -47,4 +47,4 @@ export const ApiCatalogSchema = z.object({
   /** A flexible dictionary for capability-specific configurations (e.g., API endpoints). */
   config: z.record(z.unknown()).default({}),
 });
-export type ApiCatalog = z.infer<typeof ApiCatalogSchema>;
+export type ApiCatalog = z.infer<typeof BlueprintSchema>;
